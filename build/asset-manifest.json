@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Dashboard_telegramtrends/static/css/main.3a17a764.css",
+    "main.js": "/Dashboard_telegramtrends/static/js/main.874f9934.js",
+    "index.html": "/Dashboard_telegramtrends/index.html",
+    "main.3a17a764.css.map": "/Dashboard_telegramtrends/static/css/main.3a17a764.css.map",
+    "main.874f9934.js.map": "/Dashboard_telegramtrends/static/js/main.874f9934.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3a17a764.css",
+    "static/js/main.874f9934.js"
+  ]
+}
