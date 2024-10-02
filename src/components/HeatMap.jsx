@@ -20,10 +20,7 @@ const currentYear = currentDate.getFullYear();
 
 const HeatMap = ({ csvFile, theme }) => {
   const [tooltip, setTooltip] = useState({ visible: false, content: '', top: 0, left: 0 });
-  const [selectedDay, setSelectedDay] = useState(null);
-  const [hourlyCounts, setHourlyCounts] = useState({});
   const [dailyCounts, setDailyCounts] = useState({});
-  const [showHourly, setShowHourly] = useState(false);
 
   useEffect(() => {
     const fetchCSVData = async () => {
@@ -43,9 +40,8 @@ const HeatMap = ({ csvFile, theme }) => {
               return false;
             });
 
-            const { dailyCounts, hourlyCounts } = countOccurrences(data);
+            const { dailyCounts } = countOccurrences(data);
             setDailyCounts(dailyCounts);
-            setHourlyCounts(hourlyCounts);
           },
           error: (error) => {
             console.error("Error parsing CSV file:", error);
@@ -61,7 +57,6 @@ const HeatMap = ({ csvFile, theme }) => {
 
   const countOccurrences = (data) => {
     const dailyCounts = {};
-    const hourlyCounts = {};
 
     data.forEach(entry => {
       const date = new Date(entry.date);
@@ -72,16 +67,9 @@ const HeatMap = ({ csvFile, theme }) => {
         dailyCounts[currentMonth] = Array(daysInMonth[currentMonth]).fill(0);
       }
       dailyCounts[currentMonth][day - 1] += entry.messages;
-
-      // Generate hourly counts
-      const hourKey = `${currentMonth} ${day} ${date.getHours()}`;
-      if (!hourlyCounts[hourKey]) {
-        hourlyCounts[hourKey] = 0;
-      }
-      hourlyCounts[hourKey] += entry.messages;
     });
 
-    return { dailyCounts, hourlyCounts };
+    return { dailyCounts };
   };
 
   const handleMouseEnter = (e, label, count) => {
@@ -102,7 +90,7 @@ const HeatMap = ({ csvFile, theme }) => {
 
     setTooltip({
       visible: true,
-      content: `${label}: ${count} message${count !== 1 ? 's' : ''} <br /> Click to view hourly data`,
+      content: `${label}: ${count} message${count !== 1 ? 's' : ''}`,
       top: tooltipTop,
       left: tooltipLeft
     });
@@ -110,17 +98,6 @@ const HeatMap = ({ csvFile, theme }) => {
 
   const handleMouseLeave = () => {
     setTooltip({ ...tooltip, visible: false });
-  };
-
-  const handleClick = (day) => {
-    const key = `${currentMonth} ${day}`;
-    setSelectedDay(key);
-    setShowHourly(true);
-  };
-
-  const handleHourClick = () => {
-    setShowHourly(false);
-    setSelectedDay(null);
   };
 
   const renderDays = () => {
@@ -136,7 +113,6 @@ const HeatMap = ({ csvFile, theme }) => {
           style={{ backgroundColor: color }}
           onMouseEnter={(e) => handleMouseEnter(e, `Day ${day}`, count)}
           onMouseLeave={handleMouseLeave}
-          onClick={() => handleClick(day)}
         />
       );
     });
@@ -149,51 +125,14 @@ const HeatMap = ({ csvFile, theme }) => {
     return '#176364';
   };
 
-  const renderHourlyData = () => {
-    if (!selectedDay) return null;
-
-    const [month, day] = selectedDay.split(' ');
-    const hourlySquares = [];
-
-    for (let hour = 0; hour < 24; hour++) {
-      const hourKey = `${month} ${day} ${hour}`;
-      const count = hourlyCounts[hourKey] || 0;
-      const color = getColor(count);
-      const label = `Hour ${hour}`;
-
-      hourlySquares.push(
-        <HourSquare
-          key={hour}
-          style={{ backgroundColor: color }}
-          onMouseEnter={(e) => handleMouseEnter(e, label, count)}
-          onMouseLeave={handleMouseLeave}
-          onClick={handleHourClick}
-        />
-      );
-    }
-
-    return (
-      <HourlyDataContainer theme={theme}>
-        <h4>Hourly Data for {selectedDay}</h4>
-        <HoursGrid>
-          {hourlySquares}
-        </HoursGrid>
-      </HourlyDataContainer>
-    );
-  };
-
   return (
     <HeatmapContainer className={`heatmap-container ${theme}`}>
-      {showHourly ? (
-        renderHourlyData()
-      ) : (
-        <MonthContainer>
-          <MonthName theme={theme}>{currentMonth}</MonthName>
-          <DaysGrid>
-            {renderDays()}
-          </DaysGrid>
-        </MonthContainer>
-      )}
+      <MonthContainer>
+        <MonthName theme={theme}>{currentMonth}</MonthName>
+        <DaysGrid>
+          {renderDays()}
+        </DaysGrid>
+      </MonthContainer>
       {tooltip.visible && (
         <Tooltip theme={theme} style={{ top: tooltip.top, left: tooltip.left }} dangerouslySetInnerHTML={{ __html: tooltip.content }} />
       )}
@@ -242,35 +181,6 @@ const DaysGrid = styled.div`
 `;
 
 const DaySquare = styled.div`
-  width: 100%;
-  padding-top: 100%;
-  position: relative;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
-
-  &:hover {
-    opacity: 0.9;
-    transform: scale(1.1);
-    cursor: pointer;
-  }
-`;
-
-const HourlyDataContainer = styled.div`
-  margin-top: 20px;
-  padding: 10px;
-  background-color: transparent; /* Transparent background */
-`;
-
-const HoursGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-gap: 5px;
-  width: 100%;
-  height: auto;
-`;
-
-const HourSquare = styled.div`
   width: 100%;
   padding-top: 100%;
   position: relative;

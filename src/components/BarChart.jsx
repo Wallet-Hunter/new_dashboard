@@ -13,7 +13,7 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BarChart = ({ csvFile, isDashboard = false }) => {
+const BarChart = ({ csvFile, timeFrame, isDashboard = false }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [chartData, setChartData] = useState({
     labels: [],
@@ -28,7 +28,6 @@ const BarChart = ({ csvFile, isDashboard = false }) => {
     ],
   });
 
-  const [timeFrame, setTimeFrame] = useState("daily"); // Default time frame
   const [rawData, setRawData] = useState([]); // Store raw CSV data
 
   const fetchData = useCallback(async () => {
@@ -55,7 +54,7 @@ const BarChart = ({ csvFile, isDashboard = false }) => {
 
   const processCSVData = (data) => {
     const aggregatedData = {};
-    data.forEach(row => {
+    data.forEach((row) => {
       const date = new Date(row.date_only);
       let key;
 
@@ -112,24 +111,23 @@ const BarChart = ({ csvFile, isDashboard = false }) => {
     }
   }, [timeFrame, rawData]);
 
-  const handleTimeFrameChange = (frame) => {
-    setTimeFrame(frame); // Update time frame
-  };
-
   return (
     <div style={{ position: 'relative' }}>
-      <div style={{ marginBottom: "20px", display: "flex", gap: "10px", justifyContent: "center" }}>
-       <button onClick={() => handleTimeFrameChange("daily")}>Daily</button>
-        <button onClick={() => handleTimeFrameChange("weekly")}>Weekly</button>
-        <button onClick={() => handleTimeFrameChange("monthly")}>Monthly</button>
-        <button onClick={() => handleTimeFrameChange("yearly")}>Yearly</button>
-      </div>
-      <div style={{ height: "470px" }}>
+      <div style={{ height: "470px" }} className="chart-container">
         <Bar
           data={chartData}
           options={{
             responsive: true,
             maintainAspectRatio: false,
+            animation: {
+              duration: 1000, // Animation when loading the chart
+              easing: "easeOutQuart",
+            },
+            hover: {
+              animationDuration: 500, // Animation duration on hover
+              mode: 'nearest',
+              intersect: true,
+            },
             plugins: {
               legend: {
                 display: !isDashboard,
@@ -146,7 +144,7 @@ const BarChart = ({ csvFile, isDashboard = false }) => {
               x: {
                 title: {
                   display: true,
-                  text: timeFrame === "weekly" ? "Week" : timeFrame === "monthly" ? "Month" : timeFrame === "yearly" ? "Year" : "Date",
+                  text: timeFrame === "weekly" ? "Week" : timeFrame === "monthly" ? "Month" : "Date",
                 },
                 grid: {
                   display: false,
@@ -175,23 +173,13 @@ const BarChart = ({ csvFile, isDashboard = false }) => {
       </div>
 
       <style jsx>{`
-        button {
-          padding: 10px 15px;
-          border: none;
-          border-radius: 5px;
-          background-color: ${isDarkMode ? "#444" : "#ddd"};
-          color: ${isDarkMode ? "#fff" : "#000"};
-          cursor: pointer;
-          transition: background-color 0.3s;
-        }
-        button:hover {
-          background-color: ${isDarkMode ? "#555" : "#ccc"};
-        }
-        .chartjs-render-monitor {
-          transition: transform 0.3s ease;
+        .chart-container:hover .chartjs-render-monitor {
+          transform: scale(1.05); /* Scale the entire chart on hover */
+          transition: transform 0.3s ease; /* Smooth scaling transition */
         }
         .chartjs-render-monitor:hover {
-          transform: scale(1.05);
+          transition: transform 0.3s ease;
+          transform: scale(1.05); /* Scale specific bars on hover */
         }
       `}</style>
     </div>

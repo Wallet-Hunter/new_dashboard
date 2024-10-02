@@ -9,6 +9,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import Papa from 'papaparse';
+import styled from 'styled-components'; // Import styled-components for better styling
 
 const LineChart = ({ csvFile }) => {
   const [data, setData] = useState([]);
@@ -78,8 +79,8 @@ const LineChart = ({ csvFile }) => {
   }
 
   return (
-    <div className={`chart-container ${theme}`}>
-      <ResponsiveContainer width="100%" height={300} alignItem="center">
+    <ChartContainer className={theme}>
+      <ResponsiveContainer width="100%" height={300}>
         <RechartsLineChart
           data={data}
           margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
@@ -102,6 +103,7 @@ const LineChart = ({ csvFile }) => {
               border: 'none',
               color: 'var(--tooltip-color)',
             }}
+            wrapperStyle={{ zIndex: 10 }} // Ensures tooltip appears above other elements
           />
           <Line
             type="monotone"
@@ -113,53 +115,55 @@ const LineChart = ({ csvFile }) => {
           />
         </RechartsLineChart>
       </ResponsiveContainer>
-
-      <style jsx>{`
-        :root {
-          --line-color: #43e5f4; /* Light theme line color */
-          --axis-color: #333333; /* Light theme axis color */
-          --grid-color: rgba(0, 0, 0, 0.1); /* Light theme grid color */
-          --tooltip-bg: #f0f0f0; /* Light theme tooltip background */
-          --tooltip-color: #333333; /* Light theme tooltip text color */
-        }
-
-        .dark {
-          --line-color: #43e5f4; /* Dark theme line color */
-          --axis-color: #dcdcdc; /* Dark theme axis color */
-          --grid-color: rgba(220, 220, 220, 0.1); /* Dark theme grid color */
-          --tooltip-bg: #1a1a1a; /* Dark theme tooltip background */
-          --tooltip-color: #ffffff; /* Dark theme tooltip text color */
-        }
-
-        .chart-container {
-          width: 100%;
-          height: 100%;
-          
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        
-
-        .animated-line {
-          stroke-dasharray: 1000;
-          stroke-dashoffset: 1000;
-          animation: drawLine 3s ease-in-out forwards;
-          filter: drop-shadow(0 0 5px rgba(80, 185, 255, 0.7));
-        }
-
-        @keyframes drawLine {
-          from {
-            stroke-dashoffset: 1000;
-          }
-          to {
-            stroke-dashoffset: 0;
-          }
-        }
-      `}</style>
-    </div>
+      <Style theme={theme} />
+    </ChartContainer>
   );
 };
+
+// Styled components for LineChart
+const ChartContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &.light {
+    --line-color: #43e5f4; /* Light theme line color */
+    --axis-color: #333333; /* Light theme axis color */
+    --grid-color: rgba(0, 0, 0, 0.1); /* Light theme grid color */
+    --tooltip-bg: #f0f0f0; /* Light theme tooltip background */
+    --tooltip-color: #333333; /* Light theme tooltip text color */
+  }
+
+  &.dark {
+    --line-color: #43e5f4; /* Dark theme line color */
+    --axis-color: #dcdcdc; /* Dark theme axis color */
+    --grid-color: rgba(220, 220, 220, 0.1); /* Dark theme grid color */
+    --tooltip-bg: #1a1a1a; /* Dark theme tooltip background */
+    --tooltip-color: #ffffff; /* Dark theme tooltip text color */
+  }
+`;
+
+const Style = styled.div`
+  .animated-line {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawLine 8s ease-in-out forwards infinite;
+    filter: drop-shadow(0 0 5px rgba(80, 185, 255, 0.7));
+  }
+
+  @keyframes drawLine {
+    0% {
+      stroke-dashoffset: 1000;
+    }
+    50% {
+      stroke-dashoffset: 0;
+    }
+    100% {
+      stroke-dashoffset: 1000;
+    }
+  }
+`;
 
 export default LineChart;
