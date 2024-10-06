@@ -112,13 +112,13 @@ const BarChart = ({ csvFile, timeFrame, isDashboard = false }) => {
   }, [timeFrame, rawData]);
 
   return (
-    <div style={{ position: 'relative' }}>
-      <div style={{ height: "470px" }} className="chart-container">
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <div style={{ width: "100%", height: "100%" }} className="chart-container">
         <Bar
           data={chartData}
           options={{
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: false, // Allow the chart to fill the container
             animation: {
               duration: 1000, // Animation when loading the chart
               easing: "easeOutQuart",

@@ -9,7 +9,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import Papa from 'papaparse';
-import styled from 'styled-components'; // Import styled-components for better styling
+import styled from 'styled-components';
 
 const LineChart = ({ csvFile }) => {
   const [data, setData] = useState([]);
@@ -80,7 +80,7 @@ const LineChart = ({ csvFile }) => {
 
   return (
     <ChartContainer className={theme}>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height="100%">
         <RechartsLineChart
           data={data}
           margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
@@ -88,12 +88,12 @@ const LineChart = ({ csvFile }) => {
           <CartesianGrid strokeDasharray="3 3" stroke="var(--grid-color)" />
           <XAxis
             dataKey="hour"
-            label={{ value: 'Hour', position: 'insideBottomRight', offset: -5 }} // X-axis label
+            label={{ value: 'Hour', position: 'insideBottomRight', offset: -5 }}
             tick={{ fill: "var(--axis-color)" }}
-            padding={{ left: 10, right: 10 }} // Adds padding on the sides
+            padding={{ left: 10, right: 10 }}
           />
           <YAxis
-            label={{ value: 'Messages', angle: -90, position: 'insideLeft', offset: 10 }} // Y-axis label
+            label={{ value: 'Messages', angle: -90, position: 'insideLeft', offset: 10 }}
             tick={{ fill: "var(--axis-color)" }}
           />
           <Tooltip
@@ -103,7 +103,7 @@ const LineChart = ({ csvFile }) => {
               border: 'none',
               color: 'var(--tooltip-color)',
             }}
-            wrapperStyle={{ zIndex: 10 }} // Ensures tooltip appears above other elements
+            wrapperStyle={{ zIndex: 10 }}
           />
           <Line
             type="monotone"
@@ -123,25 +123,25 @@ const LineChart = ({ csvFile }) => {
 // Styled components for LineChart
 const ChartContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100%;  // Make sure it fills the parent
   display: flex;
   justify-content: center;
   align-items: center;
 
   &.light {
-    --line-color: #43e5f4; /* Light theme line color */
-    --axis-color: #333333; /* Light theme axis color */
-    --grid-color: rgba(0, 0, 0, 0.1); /* Light theme grid color */
-    --tooltip-bg: #f0f0f0; /* Light theme tooltip background */
-    --tooltip-color: #333333; /* Light theme tooltip text color */
+    --line-color: #43e5f4;
+    --axis-color: #333333;
+    --grid-color: rgba(0, 0, 0, 0.1);
+    --tooltip-bg: #f0f0f0;
+    --tooltip-color: #333333;
   }
 
   &.dark {
-    --line-color: #43e5f4; /* Dark theme line color */
-    --axis-color: #dcdcdc; /* Dark theme axis color */
-    --grid-color: rgba(220, 220, 220, 0.1); /* Dark theme grid color */
-    --tooltip-bg: #1a1a1a; /* Dark theme tooltip background */
-    --tooltip-color: #ffffff; /* Dark theme tooltip text color */
+    --line-color: #43e5f4;
+    --axis-color: #dcdcdc;
+    --grid-color: rgba(220, 220, 220, 0.1);
+    --tooltip-bg: #1a1a1a;
+    --tooltip-color: #ffffff;
   }
 `;
 

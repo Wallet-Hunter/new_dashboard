@@ -141,7 +141,6 @@ const HeatMap = ({ csvFile, theme }) => {
 };
 
 // Styled components for HeatMap
-
 const HeatmapContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -159,15 +158,15 @@ const MonthContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: auto;  /* Allow dynamic height based on content */
   box-sizing: border-box;
 `;
 
 const MonthName = styled.div`
   margin-bottom: 10px;
-  font-size: 1.5em;
+  font-size: 2vw;  /* Responsive font size */
   font-weight: bold;
-  color: ${({ theme }) => (theme === 'dark' ? 'color.grey[200]' : 'color.grey[200]')};
+  color: ${({ theme }) => (theme === 'dark' ? '#eee' : '#333')};  /* Change to a color for visibility */
   white-space: nowrap;
   text-align: center;
 `;
@@ -182,7 +181,7 @@ const DaysGrid = styled.div`
 
 const DaySquare = styled.div`
   width: 100%;
-  padding-top: 100%;
+  padding-top: 100%;  /* Maintain aspect ratio */
   position: relative;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);

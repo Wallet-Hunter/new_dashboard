@@ -4,7 +4,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const DoughnutChart = ({ title }) => { // Accept a title prop
+const DoughnutChart = ({ title }) => {
   const [theme, setTheme] = useState("light");
   const [selectedIndex, setSelectedIndex] = useState(null);
 
@@ -100,27 +100,29 @@ const DoughnutChart = ({ title }) => { // Accept a title prop
     hover: {
       mode: 'nearest',
       intersect: true,
-    }
+    },
   };
 
   return (
     <div style={chartContainerStyle}>
       {title && <h2 style={titleStyle}>{title}</h2>} {/* Display the title */}
-      <Doughnut data={chartData} options={options} />
-      <div style={detailsStyle}>
-        {selectedIndex !== null ? (
-          <>
-            <div style={titleStyle}>Details</div>
-            <div style={valueStyle}>
-              {`${data.labels[selectedIndex]}: ${data.values[selectedIndex].toLocaleString()} (${((data.values[selectedIndex] / data.total) * 100).toFixed(2)}%)`}
-            </div>
-          </>
-        ) : (
-          <>
-            <div style={titleStyle}>Total</div>
-            <div style={valueStyle}>{`${data.total.toLocaleString()}`}</div>
-          </>
-        )}
+      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+        <Doughnut data={chartData} options={options} />
+        <div style={detailsStyle}>
+          {selectedIndex !== null ? (
+            <>
+              <div style={titleStyle}>Details</div>
+              <div style={valueStyle}>
+                {`${data.labels[selectedIndex]}: ${data.values[selectedIndex].toLocaleString()} (${((data.values[selectedIndex] / data.total) * 100).toFixed(2)}%)`}
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={titleStyle}>Total</div>
+              <div style={valueStyle}>{`${data.total.toLocaleString()}`}</div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -128,8 +130,12 @@ const DoughnutChart = ({ title }) => { // Accept a title prop
 
 // Styles for responsive chart container
 const chartContainerStyle = {
-  width: '80%',  // Takes full width of the parent container
-  height: '80%',  // Adjusts to parent height
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '100%',  // Takes full width of the parent container
+  height: '100%',  // Adjusts to parent height
   position: 'relative',
 };
 
@@ -147,6 +153,7 @@ const titleStyle = {
   fontSize: '16px',
   fontWeight: 'bold',
   marginBottom: '4px',
+  textAlign: 'center', // Center align the title
 };
 
 const valueStyle = {
